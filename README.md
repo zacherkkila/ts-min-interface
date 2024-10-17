@@ -1,0 +1,1 @@
+# ts-min-interface README
