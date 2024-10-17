@@ -4,7 +4,11 @@ interface Props {
   car: Car;
 }
 
-export const propsTest = (props: Props) => {
-  const manufacturer = props.car.manufacturer;
-  return manufacturer;
+export const getName = (props: Props) => {
+  const name = props.car.manufacturer.name;
+  const year = props.car.year;
+  return {
+    year,
+    name,
+  };
 };

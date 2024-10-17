@@ -14,16 +14,30 @@ export function activate(context: vscode.ExtensionContext) {
       if (editor) {
         let document = editor.document;
         let selection = editor.selection;
-
         // Get the selected text
         let text = document.getText(selection);
 
         // Get the file path and name
         let filePath = document.fileName;
 
+        // Extract function name and argument name from the selected text
+        const functionMatch = text.match(/function\s+(\w+)\s*\((\w+)/);
+        const arrowFunctionMatch = text.match(
+          /(?:const|let)\s+(\w+)\s*=\s*\((\w+)/
+        );
+
+        let functionName, argumentName;
+        if (functionMatch) {
+          [, functionName, argumentName] = functionMatch;
+        } else if (arrowFunctionMatch) {
+          [, functionName, argumentName] = arrowFunctionMatch;
+        } else {
+          throw new Error("Could not extract function and argument names");
+        }
+
         try {
           await vscode.env.clipboard.writeText(
-            createMinInterface(filePath, text)
+            createMinInterface(filePath, functionName, argumentName, text)
           );
 
           vscode.window.showInformationMessage(
